@@ -1,0 +1,127 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+# TODO: Write Dcocumentation e.g. Project Test scenario. CRUD Operation: Create, Read, Update, Delete
+
+Documentation	
+
+# TODO: Write Precondition, Postcondition, Tags
+
+Pre Condition	User is Logged In
+Post Condition	Project creation status is verified
+Tags    CreateProject, TS-3-Project
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+# NOTE: Please Remove your login credential before uploading Assignments
+
+# TODO: Write Project creation field variables
+
+GroupName= TO00BL79-3010
+BlankProjectName= TestProject
+TemplateProjectName= TestProjectTemplate
+TemplateProjectNameNew= TestProjectTemplateNew
+ProjectTemplate= Sample GitLab Project
+NewProjectUrl= https://gitlab.com/projects/new
+NewBlankProjectUrl= https://gitlab.com/projects/new#blank_project
+NewTemplateProjectUrl= https://gitlab.com/projects/new#create_from_template
+BlankProjectUrl= https://gitlab.com/to00bl79-3010/testproject
+TemplateProjectUrl= https://gitlab.com/to00bl79-3010/testtemplateproject
+
+
+
+
+
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# TODO: Write Positive and Negative Test Cases and Test Process steps
+
+# Positive Test examples are below write test process steps for each below test case
+
+	Create blank project
+	Create template project 
+	Update name of template project
+	Delete template project
+	Valide that message is showing Project 'First project ' was successfully created.
+
+# Negative Test examples are below write test process steps for each below test case
+
+	Create a blank project with the previous same name
+
+
+
+# Positive Test examples are below write test process steps for each below test case
+
+Create blank project
+    [Documentation]    Test the creation of a blank project.
+    [Tags]    positive
+    Navigate to Create new project Page     NewProjectUrl
+    Navigate to Create blank project    NewBlankProjectUrl
+    Input Project Name      BlankProjectName
+    Input Project Group     GroupName (part of project url)
+    Verify Visibility Level     Private
+    Click Button    Create project
+    Wait Until Page Contains    Project 'BlankProjectName' was successfully created.
+
+Create template project 
+    [Documentation]    Test the creation of a template project.
+    [Tags]    positive
+    Navigate to Create new project Page     NewProjectUrl
+    Navigate to Create from template    NewTemplateProjectUrl
+    Click Button    Use template    next to     ProjectTemplate
+    Input Project Name      TemplateProjectName
+    Input Project Group     GroupName (part of project url)
+    Verify Visibility Level     Private
+    Click Button    Create project
+    Wait Until Page Contains    The project was successfully imported.
+
+Update name of template project
+    [Documentation]    Test updating the name of a template project.
+    [Tags]    positive
+    [Precondition] Test 'C'reate template project' finished Successfully.
+    Navigate to TemplateProjectUrl
+    Click Button    Settings
+    Click Button    General
+    Input Project Name      TemplateProjectNameNew
+    Click Button    Save changes
+    Verify Page Should Contain      Project 'TestProjectTemplateNew' was successfully updated.
+
+
+Delete template project
+    [Documentation]    Test deleting a template project.
+    [Tags]    positive
+    [Precondition]  Test 'Create template project' finished successfully.
+    Navigate to TemplateProjectUrl
+    Click Button    Settings
+    Click Button    General
+    Navigate to section     Advanced
+    Click Button    Expand
+    Click Button    Delete Project
+    Input Text  GroupName/TemplateProjectName
+    Click Button    Yes, delete project
+    Verify Page Should Contain      Project 'GroupName / TemplateProjectName-deleted-XXXXXXXX' will be deleted on XXXX-YY-ZZ
+
+# Negative Test examples are below write test process steps for each below test case
+
+Create a blank project with the previous same name
+    [Documentation]    Test creating a blank project with an existing name.
+    [Tags]    negative
+    Navigate to Create new project Page     NewProjectUrl
+    Navigate to Create blank project    NewBlankProjectUrl
+    Input Project Name      BlankProjectName
+    Input Project Group     GroupName (part of project url)
+    Verify Visibility Level     Private
+    Click Button    Create project
+    Verify Following Error Message Should Appear: 
+        "The form contains the following errors:
+            Project namespace name has already been taken
+            Name has already been taken
+            Path has already been taken"
+    

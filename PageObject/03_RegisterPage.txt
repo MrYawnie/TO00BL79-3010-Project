@@ -1,0 +1,110 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+
+# TODO: Write Documentation e.g. User Registration Test scenario with verification, valid and invalid credentials.
+
+Documentation	Testing the sign up / registration functionality. Registration Test scenario with username and password creation as well as SSO services.
+
+# TODO: Write Precondition, Postcondition, Tags
+
+Pre Condition	Open Browser
+Post Condition	Log Out and Close All Browsers / Tabs
+Tags	Registration, TS-2-Registration
+
+#******************* Common Variables ********************
+
+*** Variables ***
+
+# NOTE: Please Remove your login credential before uploading Assignments
+
+# TODO: Write Registration field variables
+
+SignUpUrl= https://gitlab.com/users/sign_up
+FirstName= Test
+LastName= Tester
+UserName= XYZ
+Email= test@test.com
+Password= ***
+PhoneNumber= 
+Invalid_Username= XYZZZ
+Invalid_Password= ******
+Invalid_Email= test@test
+Empty= 
+SSO_services=
+
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# TODO: Write Positive and Negative Test Cases and Test Process steps (Think about possible test cases)
+
+# Positive Tests
+
+Register user with valid username and password
+	Navigate to Registration Page  SignUpUrl
+	Input First name  FirstName
+	Input Last name  LastName
+	Input User name  UserName
+	Input Email  Email
+	Input Password  Password
+	Submit Registration Form
+    Verify Page Should Contain Email Verification
+	Input Email Verification code
+    Submit Email verification
+    Verify Page Should Contain Phone Verification
+	Input Phone (SMS) Verification code
+    Submit Phone verification
+	Verify Page Should Contain Personalization Page after Successful Registration
+	Verify Page Should Contain Project Creation (continued '04_ProjectPage.txt')
+
+
+# Negative Tests 
+
+	Register user with same above username,
+		...empty password,
+		...invalid email,
+		...Without recaptcha,
+
+
+Register user with same above username
+    Navigate to Registration Page  SignUpUrl
+    Input First name  FirstName
+    Input Last name  LastName
+	Input User name  UserName
+    Input Email  Email
+    Input Password  Password
+    Submit Registration Form
+    Verify Error Message Should Appear: "Username is already taken."
+
+Register user with empty password
+    Navigate to Registration Page  SignUpUrl
+    Input First name  FirstName
+    Input Last name  LastName
+	Input User name  UserName
+    Input Email  Email
+    Input Password  Empty
+    Submit Registration Form
+    Verify Error Message Should Appear: "Minimum length is 8 characters."
+
+Register user with invalid email
+    Navigate to Registration Page  SignUpUrl
+    Input First name  FirstName
+    Input Last name  LastName
+	Input User name  UserName
+    Input Email  InvalidEmail
+    Input Password  Password
+    Submit Registration Form
+    Verify Error Message Should Appear: "This email address does not look right, are you sure you typed it correctly?"
+
+# I did not get recaptcha during registration. I did get email and phone verification, which have been discussed in Positive Tests. Following is guesswork.
+Register user without recaptcha 
+    Navigate to Registration Page  SignUpUrl
+    Input First name  FirstName
+    Input Last name  LastName
+    Input Email  Email
+    Input Password  Password
+    Submit Registration Form Without Recaptcha
+    Verify Error Message Should Appear: "Please complete the recaptcha."

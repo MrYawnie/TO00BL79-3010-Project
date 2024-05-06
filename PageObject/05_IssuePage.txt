@@ -1,0 +1,91 @@
+
+#******************** Settings ************************
+
+*** Settings ***
+Documentation	Issue Test scenario. CRUD Operation: Create, Read, Update, Delete
+
+# TODO: Write Precondition and Postcondition, Tags 
+
+Pre Condition	TestProject has been created
+Post Condition	Log Out and Close All Browsers / Tabs
+Tags	Issues, Project-issues, TS-4-Issues
+
+#******************* Common Variables ********************
+
+
+*** Variables ***
+
+# NOTE: Please Remove your login credential before uploading Assignments
+
+ProjectName= TestProject
+ProjectUrl= https://gitlab.com/to00bl79-3010/TestProject
+IssuesUrl= https://gitlab.com/to00bl79-3010/TestProject/-/issues
+Title= First Issue
+TitleNew= First Issue (I-1)
+Description= Description of the first issue
+Type= Issue
+
+# TODO: Write Issue creation field variables, Updated name of the issue
+
+
+
+#******************** Test Cases *************************
+
+*** Test Case ***
+
+# TODO: Write Positive Test Cases and Test Process steps
+
+# Positive Test
+
+	Create issue,
+ 	Update name of issue, 
+	Create second issue with privious updated name
+    Delete first issue
+
+Create Issue
+	Navigate to Project Page	ProjectUrl
+	Click Button	Issues
+	Click Button	New issue
+	Input Title		Title
+	Verify Type matches		Type
+	Input Description	Description
+	Verify Optional Settings
+	Submit Issue Form / Click Button 'Create issue'
+	Verify Page Should Contain the Issue with name	Title and status 'Issue created just now by [FirstName LastName]
+
+Update name of issue
+	[Precondition]	Test 'Create Issue' has been completed successfully.
+	Navigate to previously created issue	Title
+	Click Button	Edit
+	Input Title		TitleNew
+	Click Button	Save changes
+	Verify Page Should Contain the Issue with name	TitleNew
+	Verify Page Should Contain Activity		'FirstName LastName changed title from Title to TitleNew just now'
+
+Create second issue with previous updated name
+	[Precondition]	Test 'Update name of issue' has been completed successfully.
+	Navigate to Project Page	ProjectUrl
+	Click Button	Issues
+	Click Button	New issue
+	Input Title		TitleNew
+	Verify notification 'Similar issues' with link to previously created issue with same title exists
+	Input Description
+	Click Button	Create issue
+	Navigate to Issues Page		IssuesUrl
+	Verify two issues (#1 and #2) exist with the same title	TitleNew
+
+Delete first issue
+	Navigate to Issues Page		IssuesUrl
+	Navigate to firstly created issue with id #1
+	Click Button with three dots
+	Click Button	Delete issue
+	Click Button	Delete issue	again
+	Verify issue with id #1 does not exist anymore
+
+Close second issue
+	Navigate to Issues Page		IssuesUrl
+	Navigate to secondly created issue with id #2
+	Click Button	Close issue
+	Verify Page Should Contain Activity	'FirstName LastName closed just now'
+	Navigate to Issues Page		IssuesUrl
+	Verify issue with id #2 has been moved from tab 'Open' to tab 'Closed'
